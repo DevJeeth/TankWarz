@@ -7,6 +7,7 @@ public class Drive : MonoBehaviour
 {
     public float m_fspeed = 0.1f;
     public float m_frotationSpeed = 100.0f;
+	public float m_fStoppingDistance = 0.1f;
 	public bool m_bPlayerController = false;
 
 	private Vector2 m_vec2Direction;
@@ -14,6 +15,7 @@ public class Drive : MonoBehaviour
 	private CollectibleManager m_refCollectibleManager;
 	private Vector3 m_vec3FuelPosition, m_vec3DirVector;
 	private bool m_bFuelFound = false;
+	private float m_fMagnitude = 0;
 
 	private void Start()
 	{
@@ -50,12 +52,11 @@ public class Drive : MonoBehaviour
 	{
 		if(m_bFuelFound)
 		{
-			//if(Vector2.Distance(m_vec2FuelPosition, (Vector2)transform.position) <= 0.45f)
-			//{
-			//	//transform.position = m_vec2DirVector;
-			//	m_bFuelFound = false;
-			//	return;
-			//}
+			if (Vector3.Distance(m_vec3FuelPosition, transform.position) <= m_fStoppingDistance)
+			{
+				m_bFuelFound = false;
+				return;
+			}
 			//Debug.Log("<color=red>"+ Vector2.Distance(m_vec2FuelPosition, (Vector2)transform.position) + "</color>");
 			transform.position += m_vec3DirVector * m_fspeed * Time.deltaTime;  
 		}
@@ -64,7 +65,10 @@ public class Drive : MonoBehaviour
 	private void GetFuelPosition(Vector3 a_vec3FuelPosition)
 	{
 		m_vec3FuelPosition = a_vec3FuelPosition;
-		m_vec3DirVector = transform.position - transform.position;
+
+		m_fMagnitude = Vector3.Distance(transform.position,a_vec3FuelPosition);
+		m_vec3DirVector = transform.position - m_vec3FuelPosition;
+		m_vec3DirVector = new Vector3(m_vec3DirVector.x / m_fMagnitude, m_vec3DirVector.y / m_fMagnitude, m_vec3DirVector.z / m_fMagnitude);           //normalizing vector
 		Debug.Log("<color=green>Vector Direction Generated: "+m_vec3DirVector+"</color>");
 
 
