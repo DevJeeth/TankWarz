@@ -24,7 +24,7 @@ public class CollectibleManager : MonoBehaviour
 
 	private void Start()
 	{
-		Invoke("GenerateFuel", 5);
+		Invoke("GenerateFuel", 1);
 	}
 
 	private void GenerateFuel()

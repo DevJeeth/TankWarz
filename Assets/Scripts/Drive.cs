@@ -66,8 +66,10 @@ public class Drive : MonoBehaviour
 	{
 		m_vec3FuelPosition = a_vec3FuelPosition;
 
-		m_fMagnitude = Vector3.Distance(transform.position,a_vec3FuelPosition);
-		m_vec3DirVector = transform.position - m_vec3FuelPosition;
+		m_fMagnitude = 
+			HolisticMath.GetDistance(new Coords(0,0,0), new Coords(m_vec3FuelPosition.x, m_vec3FuelPosition.y, m_vec3FuelPosition.z));
+		Debug.Log("<color=green> The magnitude of the vector from origin: "+m_fMagnitude+"</color>");
+		m_vec3DirVector = transform.position - m_vec3FuelPosition; 
 		m_vec3DirVector = new Vector3(m_vec3DirVector.x / m_fMagnitude, m_vec3DirVector.y / m_fMagnitude, m_vec3DirVector.z / m_fMagnitude);           //normalizing vector
 		Debug.Log("<color=green>Vector Direction Generated: "+m_vec3DirVector+"</color>");
 
