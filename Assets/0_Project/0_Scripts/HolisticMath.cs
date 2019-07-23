@@ -27,4 +27,18 @@ public class HolisticMath
 	{
 		return (a_fvalue * a_fvalue);
 	}
+
+	public static float DotProduct(Coords a_cPointA, Coords a_cPointB)
+	{
+		return ((a_cPointA.x * a_cPointB.x) + (a_cPointA.y * a_cPointB.y) + (a_cPointA.z * a_cPointB.z));
+	}
+
+	public static float Angle(Coords a_cPointA, Coords a_cPointB)
+	{
+		float fDotProduct = DotProduct(a_cPointA, a_cPointB);
+		float fmagnitudeOfA = GetDistance(new Coords(Vector3.zero), a_cPointA);
+		float fmagnitudeOfB = GetDistance(new Coords(Vector3.zero), a_cPointB);
+
+		return Mathf.Acos(fDotProduct / (fmagnitudeOfA * fmagnitudeOfB));  //radians -> for degree *180/mathf.PI;
+	}
 }

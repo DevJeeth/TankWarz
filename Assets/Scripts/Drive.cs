@@ -52,7 +52,7 @@ public class Drive : MonoBehaviour
 	{
 		if(m_bFuelFound)
 		{
-			if (Vector3.Distance(m_vec3FuelPosition, transform.position) <= m_fStoppingDistance)
+			if (HolisticMath.GetDistance(new Coords(transform.position), new Coords(m_vec3FuelPosition)) <= m_fStoppingDistance)
 			{
 				m_bFuelFound = false;
 				return;
@@ -67,13 +67,15 @@ public class Drive : MonoBehaviour
 		m_vec3FuelPosition = a_vec3FuelPosition;
 
 		m_fMagnitude = 
-			HolisticMath.GetDistance(new Coords(0,0,0), new Coords(m_vec3FuelPosition.x, m_vec3FuelPosition.y, m_vec3FuelPosition.z));
+			HolisticMath.GetDistance(new Coords(0,0,0), new Coords(m_vec3FuelPosition));
 		Debug.Log("<color=green> The magnitude of the vector from origin: "+m_fMagnitude+"</color>");
-		m_vec3DirVector = transform.position - m_vec3FuelPosition; 
-		m_vec3DirVector = new Vector3(m_vec3DirVector.x / m_fMagnitude, m_vec3DirVector.y / m_fMagnitude, m_vec3DirVector.z / m_fMagnitude);           //normalizing vector
-		Debug.Log("<color=green>Vector Direction Generated: "+m_vec3DirVector+"</color>");
+		m_vec3DirVector = m_vec3FuelPosition - transform.position;
 
+		Coords dirNormal = HolisticMath.GetNormal(new Coords(m_vec3DirVector));
+		m_vec3DirVector = dirNormal.ToVector();
 
+		float fAngle = (HolisticMath.Angle(new Coords(transform.up), new Coords(m_vec3DirVector))) * (180.0f/Mathf.PI);
+		Debug.Log("<color=green>The angle between Tank Vector and Fuel Vector: "+ fAngle + "</color>");
 		m_bFuelFound = true;
 		Debug.Log("<color=green>Fuel position found</color>");
 	}
