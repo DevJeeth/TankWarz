@@ -41,4 +41,12 @@ public class HolisticMath
 
 		return Mathf.Acos(fDotProduct / (fmagnitudeOfA * fmagnitudeOfB));  //radians -> for degree *180/mathf.PI;
 	}
+
+	public static Coords Rotate(Coords a_cAxis, float a_fAngle)
+	{
+		float fXvalue =( a_cAxis.x * Mathf.Cos(a_fAngle)) - (a_cAxis.y * Mathf.Sin(a_fAngle));
+		float fYvalue = (a_cAxis.x * Mathf.Sin(a_fAngle)) + (a_cAxis.y * Mathf.Cos(a_fAngle));
+		return new Coords(fXvalue, fYvalue, 0);
+
+	}
 }

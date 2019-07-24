@@ -74,9 +74,11 @@ public class Drive : MonoBehaviour
 		Coords dirNormal = HolisticMath.GetNormal(new Coords(m_vec3DirVector));
 		m_vec3DirVector = dirNormal.ToVector();
 
-		float fAngle = (HolisticMath.Angle(new Coords(transform.up), new Coords(m_vec3DirVector))) * (180.0f/Mathf.PI);
+		float fAngle = (HolisticMath.Angle(new Coords(transform.up), new Coords(m_vec3DirVector)));
 		Debug.Log("<color=green>The angle between Tank Vector and Fuel Vector: "+ fAngle + "</color>");
+		Coords cNewDirection = HolisticMath.Rotate(new Coords(0, 1, 0), fAngle);
 		m_bFuelFound = true;
+		transform.up = cNewDirection.ToVector();
 		Debug.Log("<color=green>Fuel position found</color>");
 	}
 
