@@ -42,11 +42,25 @@ public class HolisticMath
 		return Mathf.Acos(fDotProduct / (fmagnitudeOfA * fmagnitudeOfB));  //radians -> for degree *180/mathf.PI;
 	}
 
-	public static Coords Rotate(Coords a_cAxis, float a_fAngle)
+	public static Coords Rotate(Coords a_cAxis, float a_fAngle, bool a_bClockwise)
 	{
+
+		if(a_bClockwise)
+		{
+			a_fAngle = (2 * Mathf.PI) - a_fAngle;
+		}
+
 		float fXvalue =( a_cAxis.x * Mathf.Cos(a_fAngle)) - (a_cAxis.y * Mathf.Sin(a_fAngle));
 		float fYvalue = (a_cAxis.x * Mathf.Sin(a_fAngle)) + (a_cAxis.y * Mathf.Cos(a_fAngle));
 		return new Coords(fXvalue, fYvalue, 0);
 
+	}
+
+	public static Coords CrossProduct(Coords a_cVectorA, Coords a_cVectorB)
+	{
+		float fXvalue = (a_cVectorA.y * a_cVectorB.z - a_cVectorA.z * a_cVectorB.y);
+		float fYvalue = (a_cVectorA.z * a_cVectorB.x - a_cVectorA.x * a_cVectorB.z);
+		float fZvalue = (a_cVectorA.x * a_cVectorB.y - a_cVectorA.y * a_cVectorB.x);
+		return new Coords(fXvalue, fYvalue, fZvalue);
 	}
 }

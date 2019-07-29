@@ -58,7 +58,7 @@ public class Drive : MonoBehaviour
 				return;
 			}
 			//Debug.Log("<color=red>"+ Vector2.Distance(m_vec2FuelPosition, (Vector2)transform.position) + "</color>");
-			transform.position += m_vec3DirVector * m_fspeed * Time.deltaTime;  
+			transform.position += m_vec3DirVector * m_fspeed * Time.deltaTime;
 		}
 	}
 
@@ -66,7 +66,7 @@ public class Drive : MonoBehaviour
 	{
 		m_vec3FuelPosition = a_vec3FuelPosition;
 
-		m_fMagnitude = 
+		m_fMagnitude =
 			HolisticMath.GetDistance(new Coords(0,0,0), new Coords(m_vec3FuelPosition));
 		Debug.Log("<color=green> The magnitude of the vector from origin: "+m_fMagnitude+"</color>");
 		m_vec3DirVector = m_vec3FuelPosition - transform.position;
@@ -76,7 +76,14 @@ public class Drive : MonoBehaviour
 
 		float fAngle = (HolisticMath.Angle(new Coords(transform.up), new Coords(m_vec3DirVector)));
 		Debug.Log("<color=green>The angle between Tank Vector and Fuel Vector: "+ fAngle + "</color>");
-		Coords cNewDirection = HolisticMath.Rotate(new Coords(0, 1, 0), fAngle);
+
+		bool bclockwise = false;
+		if(HolisticMath.CrossProduct(new Coords(transform.up), new Coords(m_vec3DirVector)).z < 0)
+		{
+			bclockwise = false;
+		}
+
+		Coords cNewDirection = HolisticMath.Rotate(new Coords(0, 1, 0), fAngle, bclockwise);
 		m_bFuelFound = true;
 		transform.up = cNewDirection.ToVector();
 		Debug.Log("<color=green>Fuel position found</color>");
