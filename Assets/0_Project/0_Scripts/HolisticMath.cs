@@ -2,90 +2,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HolisticMath 
+public class HolisticMath
 {
+    static public float Square(float value)
+    {
+        return value * value;
+    }
 
-	static public Coords GetNormal(Coords a_cVector)
-	{
-		float fMagnitude = GetDistance(new Coords(0, 0, 0), a_cVector);
+    static public float Distance(Coords point1, Coords point2)
+    {
+        float diffSquared = Square(point1.x - point2.x) + 
+                            Square(point1.y - point2.y) + 
+                            Square(point1.z - point2.z);
+        float squareRoot = Mathf.Sqrt(diffSquared);
+        //if you are interested in how the Sqrt is calculated see
+        //https://www.codeproject.com/Articles/570700/SquareplusRootplusalgorithmplusforplusC
+        return squareRoot;
 
-		a_cVector.x /= fMagnitude;
-		a_cVector.y /= fMagnitude;
-		a_cVector.z /= fMagnitude;
-		return a_cVector;
-	}
+    }
 
-	static public float GetDistance(Coords a_cPointA, Coords a_cPointB)
-	{
-		float fMagnitude = (Square(a_cPointB.x - a_cPointA.x) + Square(a_cPointB.y - a_cPointA.y) + Square(a_cPointB.z - a_cPointA.z));
-		fMagnitude = Mathf.Sqrt(fMagnitude);
-	
-		return fMagnitude;
-	}
+    static public Coords GetNormal(Coords vector)
+    {
+        float length = Distance(new Coords(0, 0, 0), vector);
+        vector.x /= length;
+        vector.y /= length;
+        vector.z /= length;
 
-	static public float Square(float a_fvalue)
-	{
-		return (a_fvalue * a_fvalue);
-	}
+        return vector;
+    }
 
-	public static float DotProduct(Coords a_cPointA, Coords a_cPointB)
-	{
-		return ((a_cPointA.x * a_cPointB.x) + (a_cPointA.y * a_cPointB.y) + (a_cPointA.z * a_cPointB.z));
-	}
+    static public float Dot(Coords vector1, Coords vector2)
+    {
+        return (vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z);
+    }
 
-	public static float Angle(Coords a_cPointA, Coords a_cPointB)
-	{
-		float fDotProduct = DotProduct(a_cPointA, a_cPointB);
-		float fmagnitudeOfA = GetDistance(new Coords(Vector3.zero), a_cPointA);
-		float fmagnitudeOfB = GetDistance(new Coords(Vector3.zero), a_cPointB);
+    static public float Angle(Coords vector1, Coords vector2)
+    {
+        float dotDivide = Dot(vector1, vector2) / (Distance(new Coords(0, 0, 0), vector1) * Distance(new Coords(0, 0, 0), vector2));
+        return Mathf.Acos(dotDivide);  //radians.  For degrees * 180/Mathf.PI;
+    }
 
-		return Mathf.Acos(fDotProduct / (fmagnitudeOfA * fmagnitudeOfB));  //radians -> for degree *180/mathf.PI;
-	}
+    static public Coords Cross(Coords vector1, Coords vector2)
+    {
+        float iMult = vector1.y * vector2.z - vector1.z * vector2.y;
+        float jMult = vector1.z * vector2.x - vector1.x * vector2.z;
+        float kMult = vector1.x * vector2.y - vector1.y * vector2.x;
+        Coords crossProd = new Coords(iMult, jMult, kMult);
+        return crossProd;
+    }
 
-	public static Coords Rotate(Coords a_cAxis, float a_fAngle, bool a_bClockwise)
-	{
+    static public Coords Rotate(Coords vector, float angle, bool clockwise)
+    //angle in radians please
+    {
+        if (clockwise)
+            angle = 2*Mathf.PI - angle;
 
-		if(a_bClockwise)
-		{
-			a_fAngle = (2 * Mathf.PI) - a_fAngle;
-		}
-
-		float fXvalue =( a_cAxis.x * Mathf.Cos(a_fAngle)) - (a_cAxis.y * Mathf.Sin(a_fAngle));
-		float fYvalue = (a_cAxis.x * Mathf.Sin(a_fAngle)) + (a_cAxis.y * Mathf.Cos(a_fAngle));
-		return new Coords(fXvalue, fYvalue, 0);
-
-	}
-
-	public static Coords CrossProduct(Coords a_cVectorA, Coords a_cVectorB)
-	{
-		float fXvalue = (a_cVectorA.y * a_cVectorB.z - a_cVectorA.z * a_cVectorB.y);
-		float fYvalue = (a_cVectorA.z * a_cVectorB.x - a_cVectorA.x * a_cVectorB.z);
-		float fZvalue = (a_cVectorA.x * a_cVectorB.y - a_cVectorA.y * a_cVectorB.x);
-		return new Coords(fXvalue, fYvalue, fZvalue);
-	}
-
-
-	
-	public static Coords LookAt2D(Coords a_cPointA, Coords a_cPointB, Coords a_cAxis)
-	{
-		Vector3 vec3PointA, vec3PointB, vec3DirVector;
-		float fAngle;
-
-		vec3PointA = a_cPointA.ToVector();
-		vec3PointB = a_cPointB.ToVector();
-
-
-		vec3DirVector = vec3PointB - vec3PointA;
-		fAngle = Angle(a_cAxis, new Coords(vec3DirVector));
-
-		bool bclockwise = false;
-		if (CrossProduct(a_cAxis, new Coords(vec3DirVector)).z < 0)
-		{
-			bclockwise = false;
-		}
-
-		Debug.Log("AXIS: "+a_cAxis+" Angle: "+ fAngle+" Clockwize: "+bclockwise);
-		Coords cRotationValue = Rotate(a_cAxis, fAngle, bclockwise);
-		return cRotationValue;
-	}
+        float xVal = vector.x * Mathf.Cos(angle) - vector.y * Mathf.Sin(angle);
+        float yVal = vector.x * Mathf.Sin(angle) + vector.y * Mathf.Cos(angle);
+        return new Coords(xVal, yVal, 0); 
+    }
 }
